@@ -1169,6 +1169,23 @@ const SCROLL_RESTORATION_STORAGE_KEY = "react-router-scroll-positions";
 let savedScrollPositions: Record<string, number> = {};
 
 /**
+ *  Provides access to scroll positions stored by useScrollRestoration
+ *  Useful when using other libraries which mess with initial scroll; e.g. @tanstack/react-virtual's window virtualizer
+ */
+function useSavedScrollPosition({
+  getKey,
+}: {
+  getKey?: GetScrollRestorationKeyFunction;
+}) {
+  let location = useLocation();
+  let matches = useMatches();
+  let key = (getKey ? getKey(location, matches) : null) || location.key;
+  return savedScrollPositions[key] || 0;
+}
+
+export { useSavedScrollPosition as UNSAFE_useSavedScrollPosition };
+
+/**
  * When rendered inside a RouterProvider, will restore scroll positions on navigations
  */
 function useScrollRestoration({
